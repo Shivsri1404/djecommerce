@@ -1,30 +1,95 @@
 {% extends "shop/base.html" %}
 {% block title %}HomePage{% endblock %}
+{% block style %}
+<style>
+    .banner{
+        width:100%; 
+        height: 500px !important;
+    }
+    .circle-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        margin: 10px;
+    }
+    .image-container {
+        display: flex;
+        overflow-x: auto;
+        justify-content: center; /* Center when few items */
+        gap: 15px;
+        padding: 20px;
+    }
+    .image-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.image-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.image-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.card-slider {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 16px;
+  white-space: nowrap;
+
+}
+
+.card-slider::-webkit-scrollbar {
+  height: 8px;
+}
+
+.card-slider::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.card {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 340px; /* Set max height for the whole card */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover; /* Crops image to fit while preserving aspect ratio */
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.card-title,
+.card-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+</style>
+{% endblock %}
 {% load static %}
 {% block body %}
 <div class="container">
     {% if bannerObjs %}
-        <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="2000" 
+    data-bs-wrap="true" data-bs-pause="false">
             <div class="carousel-indicators">
                 {% for bannerObj in bannerObjs %}
-                    {% if forloop.first %}
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ bannerObj.id }}" class="active" aria-current="true" aria-label="Slide {{ bannerObj.id }}"></button>
-                    {% else %}
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ bannerObj.id }}" aria-label="Slide {{ bannerObj.id }}"></button>
-                    {% endif %}
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
                 {% endfor %}
             </div>
                 <div class="carousel-inner">
                     {% for bannerObj in bannerObjs %}
-                        {% if forloop.first %}
-                            <div class="carousel-item active">
-                                <img src="{{ bannerObj.banner_image.url }}" class="banner d-block w-100" alt="{{ bannerObj.name }}">
-                            </div>
-                        {% else %}
-                            <div class="carousel-item">
-                                <img src="{{ bannerObj.banner_image.url }}" class="banner d-block w-100" alt="{{ bannerObj.name }}">
-                            </div>
-                        {% endif %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ bannerObj.banner_image.url }}" class="banner d-block w-100" alt="{{ bannerObj.name }}">
+                        </div>
                     {% endfor %}
                 </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -37,5 +102,53 @@
             </button>
         </div>
     {% endif %}
+    {% if FeaturedCategoryObjs %}
+        <div class="row">
+            <!-- <div class="container mt-5"> -->
+                <!-- <h2 class="text-center mb-4">Featured Category</h2> -->
+                <div class="image-container">
+                    {% for FeaturedCategoryObj in FeaturedCategoryObjs %}
+                        <div>
+                            <img src="{{ FeaturedCategoryObj.category_id.category_image.url }}" alt="{{ FeaturedCategoryObj.name }}" class="rounded-circle circle-image">
+                            <p class="text-center">{{ FeaturedCategoryObj.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            <!-- </div> -->
+        </div>
+    {% endif %}
+    {% if sliderObjs %}
+        <div class="container mt-4">
+            <!-- <div class="d-flex justify-content-between">
+                <button class="btn btn-primary" onclick="scroll_Left()">←</button>
+                <button class="btn btn-primary" onclick="scroll_Right()">→</button>
+            </div> -->
+            {% for sliderObj in sliderObjs %}
+            <h2 class="text-align mb-4">{{ sliderObj.name }}</h2>
+            <div class="card-slider d-flex mt-3">
+                {% for productObj in sliderObj.product_ids.all %}
+                <div class="card">
+                    <img src="{{ productObj.product_image.url }}" class="card-img-top" alt="{{ productObj.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ productObj.name }}</h5>
+                        <p class="card-text">{{ productObj.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
+<script>
+    const slider = document.querySelector('.card-slider');
+    
+    function scroll_Left() {
+        slider.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+    
+    function scroll_Right() {
+        slider.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+</script>
 {% endblock %}
