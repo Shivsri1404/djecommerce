@@ -58,11 +58,19 @@
     display: flex;
     flex-direction: column;
 }
+.card-body {
+    padding: 10px;
+    height: 100px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
 .card-img-top {
-    height: 200px;
+     height: 180px; /* Adjusted for better space */
     width: 100%;
-    object-fit: cover; /* Crops image to fit while preserving aspect ratio */
+    object-fit: cover;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
 }
@@ -72,6 +80,7 @@
     overflow-wrap: break-word;
     white-space: normal;
 }
+
 </style>
 {% endblock %}
 {% load static %}
@@ -127,13 +136,24 @@
             <h2 class="text-align mb-4">{{ sliderObj.name }}</h2>
             <div class="card-slider d-flex mt-3">
                 {% for productObj in sliderObj.product_ids.all %}
-                <div class="card">
-                    <img src="{{ productObj.product_image.url }}" class="card-img-top" alt="{{ productObj.name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ productObj.name }}</h5>
-                        <p class="card-text">{{ productObj.description }}</p>
+                    <div class="card">
+                        <a href="/shop/productDetail/{{ productObj.id }}">
+                            <img src="{{ productObj.product_image.url }}" class="card-img-top" alt="{{ productObj.name }}">
+                        </a>
+                        <div class="card-body">
+                            <a href="/shop/productDetail/{{ productObj.id }}" style="text-decoration: none;color:black;">
+                            <h6 class="card-title">{{ productObj.name|upper }}</h6>
+                            </a>
+                            <p class="card-text text-center">$ {{ productObj.price }}
+                            <button type="button" role="button" class="btn btn-light text-end" style="float: left;" title="Add to Wishlist">
+                                <span class="fa fa-heart" role="img" aria-label="Add to wishlist"></span>
+                            </button>
+                            <button type="button" role="button" class="btn btn-light text-end" style="float: right;" title="Add to Cart">
+                                <span class="fa fa-shopping-cart" role="img" aria-label="Add to cart"></span>
+                            </button>
+                            </p>
+                        </div>
                     </div>
-                </div>
                 {% endfor %}
             </div>
             {% endfor %}

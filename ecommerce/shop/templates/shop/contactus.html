@@ -1,0 +1,66 @@
+{% extends "shop/base.html" %}
+{% block title %}Contact Us{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+    <div class="col-lg-7 mt-4 mt-lg-0">
+        <p class="lead">
+            Contact us about anything related to our company or services.<br>
+            We'll do our best to get back to you as soon as possible.
+        </p>
+        <div class="container">
+            <form id="contactus_form" action="{% url 'shop:contactUs' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div>
+                    <div class="mb-3 col-lg-6">
+                            <span>Name</span>
+                            <span> *</span>
+                        </label>
+                        <input id="contact1" type="text" class="form-control" name="name" required="" data-fill-with="name">
+                    </div>
+                    <div class="mb-3 col-lg-6">
+                            <span>Phone Number</span>
+                        </label>
+                        <input id="contact2" type="tel" class="form-control" name="phone" data-fill-with="phone">
+                    </div>
+                    <div class="mb-3 col-lg-6">
+                            <span>Email</span>
+                            <span> *</span>
+                        </label>
+                        <input id="contact3" type="email" class="form-control" name="email" required="" data-fill-with="email">
+                    </div>
+                    <div class="mb-3 col-12">
+                            <span>Subject</span>
+                            <span> *</span>
+                        </label>
+                        <input id="contact5" type="text" class="form-control" name="subject" required="">
+                    </div>
+                    <div class="mb-3 col-12">
+                            <span>Question</span>
+                            <span> *</span>
+                        </label>
+                        <textarea id="contact6" class="form-control" name="question" required="" rows="8"></textarea>
+                    </div>
+                    <div class="mb-0 py-2 col-12 text-end" data-name="Submit Button">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-4 offset-lg-1 mt-4 mt-lg-0">
+        <h5>My Company</h5>
+        <ul class="list-unstyled mb-0 ps-2">
+            <li><i class="fa fa-map-marker fa-fw me-2"></i><span class="o_force_ltr">567 Fake Vista Avenue</span></li>
+            <li><i class="fa fa-phone fa-fw me-2"></i><span class="o_force_ltr">+1 123-123-123</span></li>
+            <li><i class="fa fa-1x fa-fw fa-envelope me-2"></i><span>info@mycompany.com</span></li>
+        </ul>
+    </div>
+</div>
+</div>
+<!-- <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form> -->
+{% endblock %}

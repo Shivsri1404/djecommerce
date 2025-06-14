@@ -84,3 +84,16 @@ class Slider(models.Model):
         super().save(*args, **kwargs)
         if self.slider_type == 'new':
             self.product_ids.set(Product.objects.filter(published=True).order_by('-create_date')[:5])
+
+class ContactUs(models.Model):
+
+    # Suggested code may be subject to a license. Learn more: ~LicenseLog:2641710650.
+    name = models.CharField(max_length=20, blank=False, null=False)
+    email = models.EmailField(max_length=254, blank=False, null=False)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    subject = models.CharField(max_length=200, blank=False, null=False)
+    question = models.TextField(blank=False, null=False)
+    create_date = models.DateTimeField("Create Date",auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.subject}"
