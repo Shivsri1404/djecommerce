@@ -118,7 +118,10 @@
                 <div class="image-container">
                     {% for FeaturedCategoryObj in FeaturedCategoryObjs %}
                         <div>
-                            <img src="{{ FeaturedCategoryObj.category_id.category_image.url }}" alt="{{ FeaturedCategoryObj.name }}" class="rounded-circle circle-image">
+                            <a href="/shop/category/{{ FeaturedCategoryObj.category_id.id }}">
+                            <img src="{{ FeaturedCategoryObj.category_id.category_image.url }}" 
+                            alt="{{ FeaturedCategoryObj.name }}"
+                             class="rounded-circle circle-image"></a>
                             <p class="text-center">{{ FeaturedCategoryObj.name }}</p>
                         </div>
                     {% endfor %}
@@ -136,6 +139,7 @@
             <h2 class="text-align mb-4">{{ sliderObj.name }}</h2>
             <div class="card-slider d-flex mt-3">
                 {% for productObj in sliderObj.product_ids.all %}
+                    {% if productObj.published %}
                     <div class="card">
                         <a href="/shop/productDetail/{{ productObj.id }}">
                             <img src="{{ productObj.product_image.url }}" class="card-img-top" alt="{{ productObj.name }}">
@@ -154,6 +158,7 @@
                             </p>
                         </div>
                     </div>
+                    {% endif %}
                 {% endfor %}
             </div>
             {% endfor %}

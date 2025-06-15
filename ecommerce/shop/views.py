@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Banner, FeaturedCategory, Slider, ContactUs, Product
+from .models import Banner, FeaturedCategory, Slider, ContactUs, Product, Category
 # from .forms import ContactUsForm
 from django.urls import reverse
 from django.views import generic
-
-
 
 # Create your views here.
 def home(request):
@@ -51,4 +49,22 @@ class productDetailView(generic.DetailView):
     model = Product
     template_name = "shop/productDetail.html"
 
-    # return render(request, "shop/productDetail.html")
+def category(request, category_id):
+    try:
+        categoryObj = Category.objects.get(id=category_id)
+        productObjs = Product.objects.filter(category_id=category_id,published=True)
+        context = {"categoryObj":categoryObj, "productObjs":productObjs}
+    except (KeyError, Category.DoesNotExist):
+        context = {"msg":"Product not found!!!"}
+    return render(request, "shop/category.html", context)
+
+def shop(request):
+    try:
+        productObjs = Product.objects.filter(published=True)
+        CategoryObjs = Category.objects.filter(parent_categ_id=None)
+        # print(CategoryObjs)
+        context = {"productObjs":productObjs, "CategoryObjs":CategoryObjs}
+    except (KeyError, Product.DoesNotExist):
+        context = {"msg":"Product not found!!!"}
+    return render(request, "shop/shop.html", context)
+

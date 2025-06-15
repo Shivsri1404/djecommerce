@@ -1,0 +1,79 @@
+{% extends "shop/base.html" %}
+{% block title %}Products{% endblock %}
+{% block style %}
+<style>
+.card {
+    flex: 0 0 auto;
+    width: 400px;
+    height: 500px; /* Set max height for the whole card */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.card-body {
+    padding: 10px;
+    height: 100px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-img-top {
+     height: 300px; /* Adjusted for better space */
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.card-title,
+.card-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+</style>
+{% endblock %}
+{% block body %}
+<div class="container">
+    {% if categoryObj %}
+        <div class="row" style="background-color: rgb(37, 29, 29, 00.5);padding: 2%;margin-top: 2%;margin-bottom: 2%;border-radius: 20px;">
+            <div class="col-12">
+                <h1>{{ categoryObj.name }}</h1>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 2%;">
+            {% for productObj in productObjs %}
+                <div class="col-lg-4">
+                    <div class="card-slider d-flex mt-3">
+                        <div class="card">
+                            <a href="/shop/productDetail/{{ productObj.id }}">
+                                <img src="{{ productObj.product_image.url }}" class="card-img-top" alt="{{ productObj.name }}">
+                            </a>
+                            <div class="card-body">
+                                <a href="/shop/productDetail/{{ productObj.id }}" style="text-decoration: none;color:black;">
+                                <h6 class="card-title">{{ productObj.name|upper }}</h6>
+                                </a>
+                                <p class="card-text text-center">$ {{ productObj.price }}
+                                <button type="button" role="button" class="btn btn-light text-end" style="float: left;" title="Add to Wishlist">
+                                    <span class="fa fa-heart" role="img" aria-label="Add to wishlist"></span>
+                                </button>
+                                <button type="button" role="button" class="btn btn-light text-end" style="float: right;" title="Add to Cart">
+                                    <span class="fa fa-shopping-cart" role="img" aria-label="Add to cart"></span>
+                                </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row" style="background-color: rgb(37, 29, 29, 00.5);padding: 2%;margin-top: 2%;margin-bottom: 2%;border-radius: 20px;">
+            <div class="col-12">
+                <h1>{{ msg }}</h1>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
