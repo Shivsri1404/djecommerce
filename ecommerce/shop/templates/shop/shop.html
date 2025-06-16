@@ -32,26 +32,32 @@
     overflow-wrap: break-word;
     white-space: normal;
 }
+.bg-img-category {
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
 </style>
 {% endblock %}
 {% block body %}
 <div class="container">
     {% if CategoryObjs %}
-        <div class="row">
-            <!-- <div class="container mt-5"> -->
-                <!-- <h2 class="text-center mb-4">Featured Category</h2> -->
-                <div class="image-container">
-                    {% for CategoryObj in CategoryObjs %}
-                        <div>
-                            <a href="/shop/category/{{ CategoryObj.id }}">
-                            <img src="{{ CategoryObj.category_image.url }}" 
-                            alt="{{ CategoryObj.name }}"
-                             class="rounded-circle circle-image"></a>
-                            <p class="text-center">{{ CategoryObj.name }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            <!-- </div> -->
+        <div class="pb-1 mb-1 overflow-auto" style="margin: 2%;">
+            <ul class="d-flex align-items-stretch mb-1 list-unstyled overflow-visible">
+            {% for CategoryObj in CategoryObjs %}
+                <a href="/shop/shop/category/{{ CategoryObj.id }}" style="text-decoration: none;">
+                <li class="d-flex pe-3">
+                    <div class=" btn btn-light d-flex align-items-center ps-2 pe-3 fs-6 fw-normal " for="1">
+                        <div class="rounded-3 me-3 bg-img-category" style="background-image:url('{{ CategoryObj.category_image.url }}');" alt="{{ CategoryObj.name }}"></div>
+                        <span>{{ CategoryObj.name }}</span>
+                    </div>
+                </li></a>
+            {% endfor %}
+            </ul>
         </div>
     {% endif %}
     {% if productObjs %}

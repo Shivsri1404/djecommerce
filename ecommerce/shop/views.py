@@ -62,9 +62,16 @@ def shop(request):
     try:
         productObjs = Product.objects.filter(published=True)
         CategoryObjs = Category.objects.filter(parent_categ_id=None)
-        # print(CategoryObjs)
-        context = {"productObjs":productObjs, "CategoryObjs":CategoryObjs}
+        context = {"productObjs":productObjs, "CategoryObjs":CategoryObjs, "msg":"Products not found!!!"}
     except (KeyError, Product.DoesNotExist):
         context = {"msg":"Product not found!!!"}
     return render(request, "shop/shop.html", context)
 
+def shopCategory(request, category_id):
+    try:
+        CategoryObjs = Category.objects.filter(child_categ_ids=category_id)
+        productObjs = Product.objects.filter(category_id=category_id,published=True)
+        context = {"CategoryObjs":CategoryObjs, "productObjs":productObjs, "msg":"No products found in this category!!!"}    
+    except:
+        context = {"msg":"Product not found!!!"}
+    return render(request, "shop/shop.html", context)

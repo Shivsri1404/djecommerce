@@ -97,3 +97,27 @@ class ContactUs(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.subject}"
+
+class Users(models.Model):
+
+    name = models.CharField(max_length=20, blank=False, null=False)
+    email = models.EmailField(max_length=254, blank=False, null=False, unique=True)
+    password = models.CharField(max_length=20, blank=False, null=False)
+
+    def __str__(self):
+        return self.name
+
+class Address(models.Model):
+
+    name = models.CharField(max_length=20, blank=False, null=False)
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE, blank=False, null=False)
+    street  = models.CharField(max_length=100, blank=False, null=False)
+    city = models.CharField(max_length=40, blank=False, null=False)
+    zip = models.CharField(max_length=10, blank=False, null=False)
+    state = models.CharField(max_length=40, blank=False, null=False)
+    country = models.CharField(max_length=40, blank=False, null=False)
+    phone = models.CharField(max_length=20, blank=False, null=False)
+    create_date = models.DateTimeField("Create Date",auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_id.name} - {self.name}"
