@@ -29,6 +29,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://8000-firebase-djecommerce-1749395371826.cluster-ikxjzjhlifcwuroomfkjrx437g.cloudworkstations.dev",
 ]
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'shop.Users'
 
 
 # Application definition

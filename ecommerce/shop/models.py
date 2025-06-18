@@ -98,14 +98,13 @@ class ContactUs(models.Model):
     def __str__(self):
         return f"{self.name} - {self.subject}"
 
-class Users(models.Model):
+from django.contrib.auth.models import AbstractUser
+class Users(AbstractUser):
 
-    name = models.CharField(max_length=20, blank=False, null=False)
     email = models.EmailField(max_length=254, blank=False, null=False, unique=True)
-    password = models.CharField(max_length=20, blank=False, null=False)
 
     def __str__(self):
-        return self.name
+        return self.username
 
 class Address(models.Model):
 
