@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import random
 import logging
@@ -119,4 +119,89 @@ class Address(models.Model):
     create_date = models.DateTimeField("Create Date",auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user_id.name} - {self.name}"
+        return f"{self.user_id.username} - {self.name}"
+
+
+class SaleOrder(models.Model):
+
+    name = models.CharField(max_length=20, unique=True, editable=False)
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE, editable =False, null=True, blank=True)
+    address_id = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False)
+    create_date = models.DateTimeField("Create Date",auto_now_add=True)
+    total_amount = models.DecimalField("Amount Total", max_digits=10, decimal_places=2, blank=False, null=False, default = 0.00)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+        # Temporarily set a non-unique name to bypass unique constraint initially
+            self.name = "TEMP"
+            super().save(*args, **kwargs)
+
+            # Now that we have an ID, we can generate a unique name
+            self.name = "SO" + str(self.id)
+            if self.address_id:
+                self.user_id = self.address_id.user_id
+            super().save(update_fields=["name", "user_id","total_amount"])
+        else:
+            super().save(*args, **kwargs)
+
+
+class SaleOrderLine(models.Model):
+
+    name = models.CharField(max_length=20, editable=False)
+    sale_order_id = models.ForeignKey(SaleOrder, on_delete=models.CASCADE, blank=False, null=False)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, blank=False, null=False)
+    create_date = models.DateTimeField("Create Date",auto_now_add=True)
+    qty = models.IntegerField("Qauntity", default=1, blank=False, null=False)
+    product_price = models.DecimalField(max_digits=10, decimal_places=2,blank=True,null=True)
+
+    def __str__(self):
+        return f"{self.sale_order_id.name}-{self.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.name = "TEMP"
+            super().save(*args, **kwargs)
+            self.name = "SOL" + str(self.id)
+            # Calculate product price from product and qty
+        if self.product_id:
+            self.product_price = self.product_id.price * self.qty
+        super().save(update_fields=["name", "product_price","qty","product_id"])
+
+        # Update the total_amount of related SaleOrder
+        if self.sale_order_id:
+            total = SaleOrderLine.objects.filter(sale_order_id=self.sale_order_id).aggregate(
+                total=models.Sum('product_price')
+            )['total'] or 0.00
+            self.sale_order_id.total_amount = total
+            self.sale_order_id.save(update_fields=['total_amount'])
+
+    # def delete(self, *args, **kwargs):
+    #     sale_order = self.sale_order_id  # Store reference before deletion
+    #     super().delete(*args, **kwargs)
+
+    #     # After deleting the line, recalculate total_amount
+    #     if sale_order:
+    #         print(sale_order)
+    #         total = SaleOrderLine.objects.filter(sale_order_id=sale_order).aggregate(
+    #             total=models.Sum('product_price')
+    #         )['total'] or 0.00
+    #         sale_order.total_amount = total
+    #         sale_order.save(update_fields=['total_amount'])
+
+@receiver(post_delete, sender=SaleOrderLine)
+def update_order_total_on_delete(sender, instance, **kwargs):
+    sale_order = instance.sale_order_id
+    total = SaleOrderLine.objects.filter(sale_order_id=sale_order).aggregate(
+        total=models.Sum('product_price')
+    )['total'] or 0.00
+    sale_order.total_amount = total
+    sale_order.save(update_fields=['total_amount'])
+    
+
+
+
+
+
